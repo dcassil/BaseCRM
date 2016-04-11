@@ -1,4 +1,5 @@
 var rp = require('request-promise');
+var extend = require('extend');
 
 //  resources
 var account = require('./resources/account');
@@ -61,10 +62,10 @@ BaseCRM.prototype.request = function(options) {
         uri: '/v2/' + options.resource,
         body: options.data,
         qs: options.params,
-        headers: {
+        headers: extend(options.headers, {
             'user-agent': this.options.userAgent,
             'authorization': 'bearer ' + this.options.accessToken
-        },
+        }),
         timeout: (options.timeout || this.options.timeout) * 1000,
         json: true
     });
@@ -120,6 +121,18 @@ BaseCRM.prototype.upsert = function(resource, params, data) {
     });
 };
 
+BaseCRM.Sync = require('sync');
+
 BaseCRM.version = 'v' + require('../package').version;
 
 module.exports = BaseCRM;
+
+
+var crm = new BaseCRM({
+    accessToken: '409c602d1c2636a9afdfb2dac3c8ffe2ad2513fb7b159af70bdfa159f72c6ed5'
+});
+var sync = new BaseCRM.Sync(crm, '123');
+
+sync.check(function(type, action, data) {
+    return true;
+});
