@@ -1,7 +1,7 @@
 //  https://developers.getbase.com/docs/rest/reference/sync
 
-function Sync(crm, deviceUUID) {
-    this.crm = crm;
+function Sync(client, deviceUUID) {
+    this.client = client;
     this.deviceUUID = deviceUUID;
 }
 

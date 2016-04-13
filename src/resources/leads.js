@@ -1,27 +1,29 @@
 //  https://developers.getbase.com/docs/rest/reference/leads
 
-function Leads(crm) {
-    this.crm = crm;
+var Model = require('../model');
+
+function Service(request) {
+    this.request = request;
 }
 
-Leads.prototype.find = function(params) {
-    return this.crm.find('leads', params);
+Service.prototype = {
+    constructor: Service,
+
+    find: function(params) {
+        return this.request.get('leads', params, Model);
+    },
+    create: function(data) {
+        return this.request.post('leads', data, null, Model);
+    },
+    update: function(id, data) {
+        return this.request.put('leads/' + id, data, Model);
+    },
+    delete: function(id) {
+        return this.request.delete('leads/' + id);
+    },
+    upsert: function(params, data) {
+        return this.request.post('leads', data, params, Model);
+    }
 };
 
-Leads.prototype.create = function(data) {
-    return this.crm.create('leads', data);
-};
-
-Leads.prototype.update = function(id, data) {
-    return this.crm.update('leads/' + id, data);
-};
-
-Leads.prototype.delete = function(id) {
-    return this.crm.delete('leads/' + id);
-};
-
-Leads.prototype.upsert = function(params, data) {
-    return this.crm.upsert('leads', params, data);
-};
-
-module.exports = Leads;
+module.exports = Service;

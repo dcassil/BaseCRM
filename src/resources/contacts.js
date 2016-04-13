@@ -1,27 +1,29 @@
 //  https://developers.getbase.com/docs/rest/reference/contacts
 
-function Contacts(crm) {
-    this.crm = crm;
+var Model = require('../model');
+
+function Service(request) {
+    this.request = request;
 }
 
-Contacts.prototype.find = function(params) {
-    return this.crm.find('contacts', params);
+Service.prototype = {
+    constructor: Service,
+    
+    find: function(params) {
+        return this.request.get('contacts', params, Model);
+    },
+    create: function(data) {
+        return this.request.post('contacts', data, null, Model);
+    },
+    update: function(id, data) {
+        return this.request.put('contacts/' + id, data, Model);
+    },
+    delete: function(id) {
+        return this.request.delete('contacts/' + id);
+    },
+    upsert: function(params, data) {
+        return this.request.post('contacts', data, params, Model);
+    }
 };
 
-Contacts.prototype.create = function(data) {
-    return this.crm.create('contacts', data);
-};
-
-Contacts.prototype.update = function(id, data) {
-    return this.crm.update('contacts/' + id, data);
-};
-
-Contacts.prototype.delete = function(id) {
-    return this.crm.delete('contacts/' + id);
-};
-
-Contacts.prototype.upsert = function(params, data) {
-    return this.crm.upsert('contacts', params, data);
-};
-
-module.exports = Contacts;
+module.exports = Service;

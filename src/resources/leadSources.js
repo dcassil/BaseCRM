@@ -1,23 +1,27 @@
 //  https://developers.getbase.com/docs/rest/reference/lead_sources
 
-function LeadSources(crm) {
-    this.crm = crm;
+var Model = require('../model');
+
+function Service(request) {
+    this.request = request;
 }
 
-LeadSources.prototype.find = function(params) {
-    return this.crm.find('lead_sources', params);
+Service.prototype = {
+    constructor: Service,
+
+    find: function(params) {
+        return this.request.get('lead_sources', params, Model);
+    },
+    create: function(data) {
+        return this.request.post('lead_sources', data, null, Model);
+    },
+    update: function(id, data) {
+        return this.request.put('lead_sources/' + id, data, Model);
+    },
+    delete: function(id) {
+        return this.request.delete('lead_sources/' + id);
+    }
 };
 
-LeadSources.prototype.create = function(data) {
-    return this.crm.create('lead_sources', data);
-};
 
-LeadSources.prototype.update = function(id, data) {
-    return this.crm.update('lead_sources/' + id, data);
-};
-
-LeadSources.prototype.delete = function(id) {
-    return this.crm.delete('lead_sources/' + id);
-};
-
-module.exports = LeadSources;
+module.exports = Service;

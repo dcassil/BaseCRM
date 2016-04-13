@@ -139,6 +139,18 @@ crm.users.self()
   .then(function(data) {})
 ```
 
+### Sync API
+
+```javascript
+var sync = new BaseCRM.Sync(crm, '<YOUR_DEVICE_UUID>');
+
+sync.check(function handler(type, action, data) {
+    if(!savedData) {
+        return false;
+    }
+});
+```
+
 ## License
 MIT
 

@@ -1,23 +1,26 @@
 //  https://developers.getbase.com/docs/rest/reference/loss_reasons
 
-function LossReasons(crm) {
-    this.crm = crm;
+var Model = require('../model');
+
+function Service(request) {
+    this.request = request;
 }
 
-LossReasons.prototype.find = function(params) {
-    return this.crm.find('loss_reasons', params);
+Service.prototype = {
+    constructor: Service,
+
+    find: function(params) {
+        return this.request.get('loss_reasons', params, Model);
+    },
+    create: function(data) {
+        return this.request.post('loss_reasons', data, null, Model);
+    },
+    update: function(id, data) {
+        return this.request.put('loss_reasons/' + id, data, Model);
+    },
+    delete: function(id) {
+        return this.request.delete('loss_reasons/' + id);
+    }
 };
 
-LossReasons.prototype.create = function(data) {
-    return this.crm.create('loss_reasons', data);
-};
-
-LossReasons.prototype.update = function(id, data) {
-    return this.crm.update('loss_reasons/' + id, data);
-};
-
-LossReasons.prototype.delete = function(id) {
-    return this.crm.delete('loss_reasons/' + id);
-};
-
-module.exports = LossReasons;
+module.exports = Service;

@@ -1,23 +1,26 @@
 //  https://developers.getbase.com/docs/rest/reference/products
 
-function Products(crm) {
-    this.crm = crm;
+var Model = require('../model');
+
+function Service(request) {
+    this.request = request;
 }
 
-Products.prototype.find = function(params) {
-    return this.crm.find('products', params);
+Service.prototype = {
+    constructor: Service,
+
+    find: function(params) {
+        return this.request.get('products', params, Model);
+    },
+    create: function(data) {
+        return this.request.post('products', data, null, Model);
+    },
+    update: function(id, data) {
+        return this.request.put('products/' + id, data, Model);
+    },
+    delete: function(id) {
+        return this.request.delete('products/' + id);
+    }
 };
 
-Products.prototype.create = function(data) {
-    return this.crm.create('products', data);
-};
-
-Products.prototype.update = function(id, data) {
-    return this.crm.update('products/' + id, data);
-};
-
-Products.prototype.delete = function(id) {
-    return this.crm.delete('products/' + id);
-};
-
-module.exports = Products;
+module.exports = Service;

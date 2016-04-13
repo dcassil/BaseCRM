@@ -1,15 +1,18 @@
 //  https://developers.getbase.com/docs/rest/reference/users
 
-function Users(crm) {
-    this.crm = crm;
+function Service(request) {
+    this.request = request;
 }
 
-Users.prototype.find = function(params) {
-    return this.crm.find('users', params);
+Service.prototype = {
+    constructor: Service,
+
+    find: function(params) {
+        return this.request.get('users', params);
+    },
+    self: function() {
+        return this.request.post('users/self');
+    }
 };
 
-Users.prototype.self = function() {
-    return this.crm.find('users/self');
-};
-
-module.exports = Users;
+module.exports = Service;

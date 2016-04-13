@@ -1,23 +1,26 @@
 //  https://developers.getbase.com/docs/rest/reference/notes
 
-function Notes(crm) {
-    this.crm = crm;
+var Model = require('../model');
+
+function Service(request) {
+    this.request = request;
 }
 
-Notes.prototype.find = function(params) {
-    return this.crm.find('notes', params);
+Service.prototype = {
+    constructor: Service,
+
+    find: function(params) {
+        return this.request.get('notes', params, Model);
+    },
+    create: function(data) {
+        return this.request.post('notes', data, null, Model);
+    },
+    update: function(id, data) {
+        return this.request.put('notes/' + id, data, Model);
+    },
+    delete: function(id) {
+        return this.request.delete('notes/' + id);
+    }
 };
 
-Notes.prototype.create = function(data) {
-    return this.crm.create('notes', data);
-};
-
-Notes.prototype.update = function(id, data) {
-    return this.crm.update('notes/' + id, data);
-};
-
-Notes.prototype.delete = function(id) {
-    return this.crm.delete('notes/' + id);
-};
-
-module.exports = Notes;
+module.exports = Service;

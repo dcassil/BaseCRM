@@ -1,28 +1,21 @@
 //  https://developers.getbase.com/docs/rest/reference/line_items
 
-function LineItems(crm) {
-    this.crm = crm;
+function Service(request) {
+    this.request = request;
 }
 
-LineItems.prototype.find = function(orderId, params) {
-    if(typeof orderId !== 'number') {
-        orderId = orderId.id;
+Service.prototype = {
+    constructor: Service,
+
+    find: function(orderId, params) {
+        return this.request.get('orders/' + orderId + '/line_items', params);
+    },
+    create: function(orderId, data) {
+        return this.request.post('orders/' + orderId + '/line_items', data);
+    },
+    remove: function(orderId, id) {
+        return this.request.delete('orders/' + orderId + '/line_items/' + id);
     }
-    return this.crm.find('orders/' + orderId + '/line_items', params);
 };
 
-LineItems.prototype.create = function(orderId, data) {
-    if(typeof orderId !== 'number') {
-        orderId = orderId.id;
-    }
-    return this.crm.create('orders/' + orderId + '/line_items', data);
-};
-
-LineItems.prototype.remove = function(orderId, id) {
-    if(typeof orderId !== 'number') {
-        orderId = orderId.id;
-    }
-    return this.crm.delete('orders/' + orderId + '/line_items/' + id);
-};
-
-module.exports = LineItems;
+module.exports = Service;

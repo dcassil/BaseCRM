@@ -1,28 +1,30 @@
 //  https://developers.getbase.com/docs/rest/reference/associated_contacts
 
-function AssociatedContacts(crm) {
-    this.crm = crm;
+function Service(request) {
+    this.request = request;
 }
 
-AssociatedContacts.prototype.find = function(dealId, params) {
-    if(typeof dealId !== 'number') {
-        dealId = dealId.id;
+Service.prototype = {
+    constructor: Service,
+
+    find: function(dealId, params) {
+        if(typeof dealId !== 'number') {
+            dealId = dealId.id;
+        }
+        return this.request.get('deals/' + dealId + '/associated_contacts', params);
+    },
+    create: function(dealId, data) {
+        if(typeof dealId !== 'number') {
+            dealId = dealId.id;
+        }
+        return this.request.post('deals/' + dealId + '/associated_contacts', data);
+    },
+    remove: function(dealId, id) {
+        if(typeof dealId !== 'number') {
+            dealId = dealId.id;
+        }
+        return this.request.delete('deals/' + dealId + '/associated_contacts/' + id);
     }
-    return this.crm.find('deals/' + dealId + '/associated_contacts', params);
 };
 
-AssociatedContacts.prototype.create = function(dealId, data) {
-    if(typeof dealId !== 'number') {
-        dealId = dealId.id;
-    }
-    return this.crm.create('deals/' + dealId + '/associated_contacts', data);
-};
-
-AssociatedContacts.prototype.remove = function(dealId, contactId) {
-    if(typeof dealId !== 'number') {
-        dealId = dealId.id;
-    }
-    return this.crm.delete('deals/' + dealId + '/associated_contacts/' + contactId);
-};
-
-module.exports = AssociatedContacts;
+module.exports = Service;
