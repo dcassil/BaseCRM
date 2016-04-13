@@ -5,8 +5,6 @@ function Service(request) {
 }
 
 Service.prototype = {
-    constructor: Service,
-
     find: function(params) {
         return this.request.get('users', params);
     },

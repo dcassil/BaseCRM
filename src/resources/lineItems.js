@@ -5,8 +5,6 @@ function Service(request) {
 }
 
 Service.prototype = {
-    constructor: Service,
-
     find: function(orderId, params) {
         return this.request.get('orders/' + orderId + '/line_items', params);
     },

@@ -1,22 +1,18 @@
 //  https://developers.getbase.com/docs/rest/reference/tasks
 
-var Model = require('../model');
-
 function Service(request) {
     this.request = request;
 }
 
 Service.prototype = {
-    constructor: Service,
-
     find: function(params) {
-        return this.request.get('tasks', params, Model);
+        return this.request.get('tasks', params);
     },
     create: function(data) {
-        return this.request.post('tasks', data, null, Model);
+        return this.request.post('tasks', data);
     },
     update: function(id, data) {
-        return this.request.put('tasks/' + id, data, Model);
+        return this.request.put('tasks/' + id, data);
     },
     delete: function(id) {
         return this.request.delete('tasks/' + id);

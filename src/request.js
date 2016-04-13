@@ -2,10 +2,6 @@ var rp = require('request-promise');
 var extend = require('extend');
 var path = require('path');
 
-function EmptyModel(data) {
-    return data;
-}
-
 function Request(options) {
     this.options = options;
 }
@@ -26,50 +22,52 @@ Request.prototype.send = function(options) {
     });
 };
 
-Request.prototype.get = function(resource, params, Model) {
+Request.prototype.get = function(resource, params, headers) {
     var isId = typeof params === 'number';
 
-    return request.send({
+    return this.send({
         method: 'GET',
         resource: path.join(resource, isId ? '' + params : ''),
+        headers: headers,
         params: isId ? null : params
     }).then(function(res) {
-        Model = Model || EmptyModel;
-
         return res.meta.type === 'collection' ?
             res.items.map(function(item) {
-                return new Model(item.data, this);
-            }.bind(this)) :
-            new Model(res.data, this);
-    }.bind(this));
+                return item.data;
+            }) :
+            res.data;
+    });
 };
-Request.prototype.post = function(resource, data, params, Model) {
+Request.prototype.post = function(resource, data, params, headers) {
     return this.send({
         method: 'POST',
         resource: path.join(resource, params && Object.keys(params).length ? 'upsert' : ''),
+        headers: headers,
         params: params,
         data: {
             data: data
         }
     }).then(function(res) {
-        return new (Model || EmptyModel)(res.data, this);
-    }.bind(this));
+        return res && res.data;
+    });
 };
-Request.prototype.put = function(resource, data, Model) {
+Request.prototype.put = function(resource, data, headers) {
     return this.send({
         method: 'PUT',
         resource: resource,
+        headers: headers,
         data: {
             data: data
         }
     }).then(function(res) {
-        return new (Model || EmptyModel)(res.data, this);
-    }.bind(this));
+        return res.data;
+    });
 };
-Request.prototype.delete = function(resource) {
+Request.prototype.delete = function(resource, headers) {
     return this.send({
         method: 'DELETE',
-        resource: resource
+        resource: resource,
+        headers: headers
     }).then(function() {
         return true;
     });

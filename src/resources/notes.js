@@ -1,22 +1,18 @@
 //  https://developers.getbase.com/docs/rest/reference/notes
 
-var Model = require('../model');
-
 function Service(request) {
     this.request = request;
 }
 
 Service.prototype = {
-    constructor: Service,
-
     find: function(params) {
-        return this.request.get('notes', params, Model);
+        return this.request.get('notes', params);
     },
     create: function(data) {
-        return this.request.post('notes', data, null, Model);
+        return this.request.post('notes', data);
     },
     update: function(id, data) {
-        return this.request.put('notes/' + id, data, Model);
+        return this.request.put('notes/' + id, data);
     },
     delete: function(id) {
         return this.request.delete('notes/' + id);
