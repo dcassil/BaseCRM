@@ -3,35 +3,42 @@ function Service(request) {
 }
 
 Service.prototype = {
-    start: function(deviceUUID) {
-        return this.request.post('sync/start', null, null, {
-            'X-Basecrm-Device-UUID': deviceUUID
-        }).then(function(data) {
-            if(data) {
-                data.queues = data.queues.map(function(item) {
-                    return item.data;
-                });
-            }
-            return data;
-        });
+    start: function(deviceUUID, callback) {
+        return this.request
+            .headers({
+                'X-Basecrm-Device-UUID': deviceUUID
+            })
+            .post('sync/start', function(data) {
+                if(data) {
+                    data.queues = data.queues.map(function(item) {
+                        return item.data;
+                    });
+                }
+                return data;
+            })
+            .then(callback);
     },
-    fetch: function(deviceUUID, sessionId) {
+    fetch: function(deviceUUID, sessionId, callback) {
         return this.request.send({
             method: 'GET',
             resource: 'sync/' + sessionId + '/queues/main',
             headers: {
                 'X-Basecrm-Device-UUID': deviceUUID
             }
-        }).then(function(res) {
+        }, function(res) {
             return res && res.items;
-        });
+        })
+            .then(callback);
     },
-    ack: function(deviceUUID, ackKeys) {
-        return this.request.post('sync/ack', {
-            ack_keys: ackKeys
-        }, null, {
-            'X-Basecrm-Device-UUID': deviceUUID
-        });
+    ack: function(deviceUUID, ackKeys, callback) {
+        return this.request
+            .headers({
+                'X-Basecrm-Device-UUID': deviceUUID
+            })
+            .post('sync/ack', {
+                ack_keys: ackKeys
+            })
+            .then(callback);
     }
 };
 
@@ -45,41 +52,40 @@ Sync.prototype.fetch = function(handler) {
     if(!(handler instanceof Function)) {
         return;
     }
+    
+    var self = this;
 
-    if(!this.sessionId) {
-        this.service.start(this.deviceUUID)
-            .then(function(data) {
-                if(data) {
-                    this.sessionId = data.id;
-                    return this.fetch(handler);
-                }
-            }.bind(this));
+    if(!self.sessionId) {
+        self.service.start(this.deviceUUID, function(data) {
+            if(data) {
+                self.sessionId = data.id;
+                return self.fetch(handler);
+            }
+        });
         return;
     }
 
-    this.service.fetch(this.deviceUUID, this.sessionId)
-        .then(function(items) {
-            if(!(items instanceof Array)) {
-                return false;
-            }
+    self.service.fetch(self.deviceUUID, self.sessionId, function(items) {
+        if(!(items instanceof Array)) {
+            return false;
+        }
 
-            var ackKeys = items
-                .filter(function(item) {
-                    return handler.call(item, item.meta.type, item.meta.sync.event_type, item.data);
-                })
-                .map(function(item) {
-                    return item.meta.sync.ack_key;
-                });
+        var ackKeys = items
+            .filter(function(item) {
+                return handler.call(item, item.meta.type, item.meta.sync.event_type, item.data);
+            })
+            .map(function(item) {
+                return item.meta.sync.ack_key;
+            });
 
-            if(!ackKeys.length) {
-                return false;
-            }
+        if(!ackKeys.length) {
+            return false;
+        }
 
-            return this.service.ack(this.deviceUUID, ackKeys);
-        }.bind(this))
-        .then(function(isBroken) {
-            isBroken === false || this.fetch(handler);
-        }.bind(this));
+        return self.service.ack(self.deviceUUID, ackKeys, function(isBroken) {
+            isBroken === false || self.fetch(handler);
+        });
+    });
 };
 
 Sync.Service = Service;

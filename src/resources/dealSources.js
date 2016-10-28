@@ -5,17 +5,17 @@ function Service(request) {
 }
 
 Service.prototype = {
-    find: function(params) {
-        return this.request.get('deal_sources', params);
+    find: function(params, callback) {
+        return this.request.get('deal_sources', params, callback);
     },
-    create: function(data) {
-        return this.request.post('deal_sources', data);
+    create: function(data, callback) {
+        return this.request.post('deal_sources', data, null, callback);
     },
-    update: function(id, data) {
-        return this.request.put('deal_sources/' + id, data);
+    update: function(id, data, callback) {
+        return this.request.put('deal_sources/' + id, data, callback);
     },
-    delete: function(id) {
-        return this.request.delete('deal_sources/' + id);
+    delete: function(id, callback) {
+        return this.request.delete('deal_sources/' + id, callback);
     }
 };
 

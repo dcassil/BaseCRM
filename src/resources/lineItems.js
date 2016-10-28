@@ -5,14 +5,14 @@ function Service(request) {
 }
 
 Service.prototype = {
-    find: function(orderId, params) {
-        return this.request.get('orders/' + orderId + '/line_items', params);
+    find: function(orderId, params, callback) {
+        return this.request.get('orders/' + orderId + '/line_items', params, callback);
     },
-    create: function(orderId, data) {
-        return this.request.post('orders/' + orderId + '/line_items', data);
+    create: function(orderId, data, callback) {
+        return this.request.post('orders/' + orderId + '/line_items', data, null, callback);
     },
-    remove: function(orderId, id) {
-        return this.request.delete('orders/' + orderId + '/line_items/' + id);
+    remove: function(orderId, id, callback) {
+        return this.request.delete('orders/' + orderId + '/line_items/' + id, callback);
     }
 };
 

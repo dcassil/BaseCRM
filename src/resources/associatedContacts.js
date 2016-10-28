@@ -5,14 +5,14 @@ function Service(request) {
 }
 
 Service.prototype = {
-    find: function(dealId, params) {
-        return this.request.get('deals/' + dealId + '/associated_contacts', params);
+    find: function(dealId, params, callback) {
+        return this.request.get('deals/' + dealId + '/associated_contacts', params, callback);
     },
-    create: function(dealId, data) {
-        return this.request.post('deals/' + dealId + '/associated_contacts', data);
+    create: function(dealId, data, callback) {
+        return this.request.post('deals/' + dealId + '/associated_contacts', data, null, callback);
     },
-    remove: function(dealId, id) {
-        return this.request.delete('deals/' + dealId + '/associated_contacts/' + id);
+    remove: function(dealId, id, callback) {
+        return this.request.delete('deals/' + dealId + '/associated_contacts/' + id, callback);
     }
 };
 

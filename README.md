@@ -165,8 +165,6 @@ sync.fetch(function(type, action, data) {
 
 Notice that you must return `BaseCRM.Sync.ACK` or `BaseCRM.Sync.NACK`.
 
-```
-
 ## License
 MIT
 

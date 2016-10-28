@@ -5,11 +5,11 @@ function Service(request) {
 }
 
 Service.prototype = {
-    find: function(params) {
-        return this.request.get('users', params);
+    find: function(params, callback) {
+        return this.request.get('users', params, callback);
     },
-    self: function() {
-        return this.request.post('users/self');
+    self: function(callback) {
+        return this.request.get('users/self', callback);
     }
 };
 

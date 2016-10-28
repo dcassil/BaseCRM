@@ -5,20 +5,20 @@ function Service(request) {
 }
 
 Service.prototype = {
-    find: function(params) {
-        return this.request.get('leads', params);
+    find: function(params, callback) {
+        return this.request.get('leads', params, callback);
     },
-    create: function(data) {
-        return this.request.post('leads', data);
+    create: function(data, callback) {
+        return this.upsert(null, data, callback);
     },
-    update: function(id, data) {
-        return this.request.put('leads/' + id, data);
+    update: function(id, data, callback) {
+        return this.request.put('leads/' + id, data, callback);
     },
-    delete: function(id) {
-        return this.request.delete('leads/' + id);
+    delete: function(id, callback) {
+        return this.request.delete('leads/' + id, callback);
     },
-    upsert: function(params, data) {
-        return this.request.post('leads', data, params);
+    upsert: function(params, data, callback) {
+        return this.request.post('leads', data, params, callback);
     }
 };
 
